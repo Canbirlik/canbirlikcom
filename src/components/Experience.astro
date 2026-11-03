@@ -1,0 +1,170 @@
+---
+import { experience } from '../data/profile';
+
+const year = (d: string) => d.match(/\d{4}/)?.[0] ?? d;
+---
+
+<section id="experience" class="grid-paper relative py-24 sm:py-32">
+  <div class="container-page">
+    <div class="max-w-2xl rounded-2xl bg-paper/80 py-2 backdrop-blur-[2px]">
+      <p class="eyebrow" data-reveal>Experience</p>
+      <h2 class="section-title mt-3" data-reveal>My journey so far</h2>
+      <p class="mt-4 text-muted" data-reveal>
+        From presales and cloud solution design in Istanbul to architecting enterprise data platforms in Riga.
+      </p>
+    </div>
+
+    <div id="timeline" class="relative mt-20">
+      <svg id="timeline-svg" class="pointer-events-none absolute inset-0 overflow-visible" aria-hidden="true">
+        <path id="timeline-track" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"></path>
+        <path id="timeline-path" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"></path>
+        <circle id="timeline-pen" r="6" fill="var(--accent)" opacity="0"></circle>
+      </svg>
+
+      <ol class="relative space-y-20 md:space-y-28">
+        {
+          experience.map((job, i) => {
+            const right = i % 2 === 0;
+            return (
+              <li class="relative grid md:grid-cols-2 md:gap-28">
+                <span
+                  data-node
+                  class="absolute top-7 left-5 z-10 size-6 -translate-x-1/2 rounded-full border-[5px] border-paper bg-line shadow transition-colors duration-500 data-[active]:bg-accent md:left-1/2"
+                  aria-hidden="true"
+                />
+                <span
+                  class:list={[
+                    'pointer-events-none absolute top-0 hidden font-display text-6xl font-bold text-ink/90 md:block lg:text-7xl',
+                    right ? 'right-[calc(50%+3rem)]' : 'left-[calc(50%+3rem)]',
+                  ]}
+                  aria-hidden="true"
+                >
+                  {year(job.start)}
+                </span>
+
+                <article
+                  data-reveal
+                  class:list={[
+                    'ml-12 rounded-2xl border border-line bg-card p-6 shadow-sm sm:p-8 md:ml-0',
+                    right ? 'md:col-start-2' : 'md:col-start-1',
+                  ]}
+                >
+                  <p class="text-sm font-medium text-accent">
+                    <time>{job.start}</time> - <time>{job.end}</time>
+                  </p>
+                  <h3 class="mt-2 font-display text-xl leading-snug font-bold sm:text-2xl">{job.role}</h3>
+                  <p class="mt-1 text-muted">
+                    {job.company} · {job.location}
+                  </p>
+                  <ul class="mt-5 space-y-2.5 text-[0.95rem] leading-relaxed">
+                    {job.highlights.map((h) => (
+                      <li class="relative pl-5 before:absolute before:top-[0.7em] before:left-0 before:size-1.5 before:rounded-full before:bg-accent">
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+                  {job.stack && (
+                    <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tech stack">
+                      {job.stack.map((t) => (
+                        <li class="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">{t}</li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { scroll } from 'motion';
+
+  const root = document.getElementById('timeline')!;
+  const svg = document.getElementById('timeline-svg') as unknown as SVGSVGElement;
+  const track = document.getElementById('timeline-track') as unknown as SVGPathElement;
+  const path = document.getElementById('timeline-path') as unknown as SVGPathElement;
+  const pen = document.getElementById('timeline-pen') as unknown as SVGCircleElement;
+  const nodes = [...root.querySelectorAll<HTMLElement>('[data-node]')];
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let length = 0;
+  let nodeAt: number[] = []; // path length at which each node is reached
+  let progress = 0;
+
+  // Build a winding path through every node: each segment bulges away from the card below it,
+  // so the line sweeps across the empty side of the grid. On narrow screens it stays straight.
+  function layout() {
+    const box = root.getBoundingClientRect();
+    const w = box.width;
+    const h = box.height;
+    svg.setAttribute('width', String(w));
+    svg.setAttribute('height', String(h));
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    const pts = nodes.map((n) => {
+      const r = n.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+    });
+    const wide = matchMedia('(min-width: 768px)').matches;
+    const amp = wide ? Math.min(w * 0.32, 340) : 0;
+
+    let d = `M ${pts[0].x} ${-80}`;
+    const segs: string[] = [`L ${pts[0].x} ${pts[0].y}`];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i];
+      const b = pts[i + 1];
+      const side = i % 2 === 0 ? -1 : 1; // even cards sit on the right, so bulge left
+      const dy = b.y - a.y;
+      segs.push(`C ${a.x + side * amp} ${a.y + dy * 0.35}, ${b.x + side * amp} ${b.y - dy * 0.35}, ${b.x} ${b.y}`);
+    }
+    const last = pts[pts.length - 1];
+    segs.push(`L ${last.x} ${h + 40}`);
+
+    // Measure cumulative length up to each node with a scratch path.
+    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    svg.appendChild(probe);
+    nodeAt = pts.map((_, i) => {
+      probe.setAttribute('d', d + ' ' + segs.slice(0, i + 1).join(' '));
+      return probe.getTotalLength();
+    });
+    probe.remove();
+
+    d += ' ' + segs.join(' ');
+    track.setAttribute('d', d);
+    path.setAttribute('d', d);
+    length = path.getTotalLength();
+    path.style.strokeDasharray = `${length}`;
+    render();
+  }
+
+  function render() {
+    const p = reduceMotion ? 1 : progress;
+    const drawn = length * p;
+    path.style.strokeDashoffset = `${length - drawn}`;
+    nodes.forEach((n, i) => n.toggleAttribute('data-active', drawn >= nodeAt[i] - 1));
+    if (!reduceMotion && p > 0 && p < 1) {
+      const pt = path.getPointAtLength(drawn);
+      pen.setAttribute('cx', String(pt.x));
+      pen.setAttribute('cy', String(pt.y));
+      pen.setAttribute('opacity', '1');
+    } else {
+      pen.setAttribute('opacity', '0');
+    }
+  }
+
+  // Progress runs from the timeline's top reaching mid-screen to its bottom reaching mid-screen.
+  scroll(
+    (p: number) => {
+      progress = p;
+      render();
+    },
+    { target: root, offset: ['start 60%', 'end 60%'] },
+  );
+
+  layout();
+  new ResizeObserver(() => layout()).observe(root);
+</script>

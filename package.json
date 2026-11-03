@@ -1,0 +1,24 @@
+{
+  "name": "canbirlikcom",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.4",
+    "astro": "^7.4.5",
+    "motion": "^14.9.0",
+    "simple-icons": "^16.36.0",
+    "tailwindcss": "^4.3.4"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

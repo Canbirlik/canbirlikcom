@@ -1,0 +1,114 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/space-grotesk';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Design tokens. Light is default; dark follows the OS unless the user picks one. */
+:root {
+  --paper: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1b2240;
+  --muted: #5b6178;
+  --line: #dcd8cd;
+  --grid: #e6e2d8;
+  --accent: #0f7b6c;
+  --accent-soft: #dcefe9;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #0f1320;
+    --card: #161b2d;
+    --ink: #e8e9f0;
+    --muted: #9aa0b5;
+    --line: #2a3048;
+    --grid: #1b2136;
+    --accent: #3cc3ac;
+    --accent-soft: #15322f;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #0f1320;
+  --card: #161b2d;
+  --ink: #e8e9f0;
+  --muted: #9aa0b5;
+  --line: #2a3048;
+  --grid: #1b2136;
+  --accent: #3cc3ac;
+  --accent-soft: #15322f;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-8;
+  }
+  .eyebrow {
+    @apply font-display text-sm font-semibold tracking-[0.2em] text-accent uppercase;
+  }
+  .section-title {
+    @apply font-display text-3xl font-bold tracking-tight sm:text-4xl;
+  }
+  .grid-paper {
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center top;
+  }
+}
+
+/* Scroll-reveal: elements start hidden only when JS is running (see Layout). */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

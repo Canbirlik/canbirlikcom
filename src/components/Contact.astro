@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<section id="contact" class="grid-paper py-28 sm:py-36">
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl rounded-3xl border border-line bg-card px-6 py-14 text-center shadow-sm sm:px-14" data-reveal>
+      <p class="eyebrow">Contact</p>
+      <h2 class="section-title mt-3">Let's build something great</h2>
+      <p class="mx-auto mt-5 max-w-xl leading-relaxed text-muted">
+        Working on a data platform, a cloud migration or a GenAI initiative? I'm always happy to talk architecture.
+      </p>
+      <a
+        href={`mailto:${profile.email}`}
+        class="group mt-10 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 font-semibold text-paper transition hover:bg-accent"
+      >
+        <Icon name="mail" class="size-5" />
+        {profile.email}
+      </a>
+      <div class="mt-8 flex justify-center gap-6">
+        {
+          profile.socials
+            .filter((s) => s.href.startsWith('http'))
+            .map((s) => (
+              <a href={s.href} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-muted hover:text-accent">
+                <Icon name={s.icon} />
+                {s.label}
+              </a>
+            ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-line py-8 text-center text-sm text-muted">
+  <div class="container-page flex flex-wrap items-center justify-between gap-4">
+    <p>© {year} {profile.name}</p>
+    <a href="#top" class="inline-flex items-center gap-1 hover:text-ink">
+      Back to top <Icon name="arrowUp" class="size-4" />
+    </a>
+  </div>
+</footer>

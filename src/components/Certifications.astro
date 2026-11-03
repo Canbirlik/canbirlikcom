@@ -1,0 +1,107 @@
+---
+import Icon from './Icon.astro';
+import { certCategories, certifications } from '../data/profile';
+
+// Issuer mark: a simple-icons logo where one exists, otherwise a short text label.
+const issuerMark: Record<string, { icon?: string; text?: string }> = {
+  Snowflake: { icon: 'siSnowflake' },
+  Databricks: { icon: 'siDatabricks' },
+  Google: { icon: 'siGoogle' },
+  Anthropic: { icon: 'siAnthropic' },
+  OpenAI: { icon: 'siOpenai' },
+  Huawei: { icon: 'siHuawei' },
+  'The Linux Foundation': { icon: 'siLinuxfoundation' },
+  'Linux Professional Institute': { icon: 'siLinux' },
+  AWS: { icon: 'siAws' },
+  Microsoft: { icon: 'siMicrosoft' },
+  Oracle: { icon: 'siOracle' },
+  EXIN: { text: 'EXIN' },
+  'Scrum.org': { text: 'PSM' },
+};
+
+const currentYear = String(new Date().getFullYear());
+---
+
+<section id="certifications" class="py-24 sm:py-32">
+  <div class="container-page">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="eyebrow" data-reveal>Certifications</p>
+        <h2 class="section-title mt-3" data-reveal>Always learning</h2>
+        <p class="mt-4 max-w-xl text-muted" data-reveal>
+          {certifications.length} certifications across data platforms, AI, cloud architecture and security.
+        </p>
+      </div>
+
+      <div role="group" aria-label="Filter certifications" class="hidden flex-wrap gap-2 in-[.js]:flex" data-reveal>
+        {
+          [{ id: 'all', label: 'All' }, ...certCategories].map((c, i) => (
+            <button
+              type="button"
+              data-filter={c.id}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition hover:border-ink hover:text-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+            >
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <ul id="cert-list" class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        certifications.map((c) => (
+          <li
+            data-category={c.category}
+            class="group flex gap-4 rounded-2xl border border-line bg-card p-5 transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+          >
+            <span
+              class="grid size-11 shrink-0 place-items-center rounded-xl bg-accent-soft font-display text-[0.7rem] font-bold tracking-wide text-accent"
+              aria-hidden="true"
+            >
+              {issuerMark[c.issuer]?.icon ? <Icon name={issuerMark[c.issuer].icon!} class="size-5" /> : (issuerMark[c.issuer]?.text ?? c.issuer.slice(0, 3))}
+            </span>
+            <div class="min-w-0">
+              <h3 class="leading-snug font-semibold">
+                {c.name}
+                {c.date.endsWith(currentYear) && (
+                  <span class="ml-1 inline-block rounded bg-accent px-1.5 py-0.5 align-middle text-[0.65rem] font-bold tracking-wider text-paper uppercase">
+                    New
+                  </span>
+                )}
+              </h3>
+              <p class="mt-1 text-sm text-muted">
+                {c.issuer} · {c.date}
+              </p>
+              {c.url && (
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+                  aria-label={`Verify ${c.name}`}
+                >
+                  Verify <Icon name="arrowRight" class="size-3.5 -rotate-45" />
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLElement>('#cert-list > li');
+
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      items.forEach((li) => (li.hidden = f !== 'all' && li.dataset.category !== f));
+    }),
+  );
+</script>

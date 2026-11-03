@@ -1,0 +1,92 @@
+---
+import Icon from './Icon.astro';
+
+const links = [
+  { href: '#skills', label: 'Skills' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#certifications', label: 'Certifications' },
+  { href: '#education', label: 'Education' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-300 data-[scrolled]:bg-paper/85 data-[scrolled]:shadow-[0_1px_0_var(--line)] data-[scrolled]:backdrop-blur"
+>
+  <div class="container-page flex h-16 items-center justify-between">
+    <a href="#top" class="font-display text-2xl font-bold tracking-tight" aria-label="Can Birlik, back to top">
+      cb<span class="text-accent">.</span>
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-8 text-sm tracking-wide">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="text-muted transition-colors hover:text-ink">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <button
+        id="theme-toggle"
+        type="button"
+        class="grid size-9 place-items-center rounded-full text-muted transition-colors hover:bg-card hover:text-ink"
+        aria-label="Toggle dark mode"
+      >
+        <Icon name="moon" class="size-5 dark:hidden" />
+        <Icon name="sun" class="hidden size-5 dark:block" />
+      </button>
+
+      <details class="group relative md:hidden">
+        <summary
+          class="grid size-9 cursor-pointer list-none place-items-center rounded-full text-muted hover:bg-card hover:text-ink [&::-webkit-details-marker]:hidden"
+          aria-label="Open menu"
+        >
+          <Icon name="menu" />
+        </summary>
+        <nav aria-label="Mobile" class="absolute right-0 mt-2 w-48 rounded-xl border border-line bg-card p-2 shadow-lg">
+          <ul>
+            {
+              links.map((l) => (
+                <li>
+                  <a href={l.href} class="block rounded-lg px-3 py-2 text-sm hover:bg-accent-soft">
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Close the mobile menu after picking a link.
+  document.querySelectorAll<HTMLAnchorElement>('details nav a').forEach((a) =>
+    a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')),
+  );
+
+  // The head script has already resolved data-theme; the toggle flips and remembers it.
+  const root = document.documentElement;
+  document.getElementById('theme-toggle')!.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+  });
+</script>

@@ -1,0 +1,58 @@
+---
+import { accomplishments, education, languages } from '../data/profile';
+---
+
+<section id="education" class="border-t border-line bg-card py-24 sm:py-32">
+  <div class="container-page grid gap-16 lg:grid-cols-[1.2fr_1fr]">
+    <div>
+      <p class="eyebrow" data-reveal>Education</p>
+      <h2 class="section-title mt-3" data-reveal>Foundations</h2>
+
+      <ol class="mt-10 space-y-8 border-l border-line pl-8">
+        {
+          education.map((e) => (
+            <li class="relative" data-reveal>
+              <span
+                class:list={[
+                  'absolute top-1.5 -left-[2.4rem] size-3 rounded-full ring-4 ring-card',
+                  e.completed === false ? 'border-2 border-accent bg-card' : 'bg-accent',
+                ]}
+                aria-hidden="true"
+              />
+              <p class="text-sm font-medium text-accent">{e.period}</p>
+              <h3 class="mt-1 font-display text-xl font-bold">{e.degree}</h3>
+              <p class="mt-1 text-muted">{e.school}</p>
+              <p class="mt-1 text-sm text-muted">{e.note}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h3 class="mt-16 font-display text-sm font-semibold tracking-[0.15em] uppercase" data-reveal>Languages</h3>
+      <ul class="mt-4 flex flex-wrap gap-3" data-reveal>
+        {
+          languages.map((l) => (
+            <li class="rounded-full border border-line px-4 py-1.5 text-sm">
+              {l.name} <span class="text-muted">· {l.level}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <p class="eyebrow" data-reveal>Accomplishments</p>
+      <h2 class="section-title mt-3" data-reveal>Milestones</h2>
+      <ul class="mt-10 space-y-4">
+        {
+          accomplishments.map((a) => (
+            <li class="flex gap-5 rounded-2xl border border-line bg-paper p-5" data-reveal>
+              <span class="font-display text-lg font-bold text-accent">{a.year}</span>
+              <p class="leading-relaxed">{a.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
