@@ -9,6 +9,9 @@ export const profile = {
   tagline: 'I design data platforms that scale.',
   summary:
     '15+ years in enterprise architecture, cloud platforms and technology consulting. I design lakehouse and data platforms on Snowflake and Databricks across AWS and Microsoft Azure, and translate complex business requirements into secure, scalable solutions.',
+  // Shown under the site in search results; keep it under ~155 characters.
+  metaDescription:
+    'Can Birlik is a Senior Data & Cloud Solution Architect in Riga, Latvia, designing data platforms on Snowflake and Databricks across AWS and Azure.',
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/canbirlik/', icon: 'linkedin' },
     { label: 'GitHub', href: 'https://github.com/Canbirlik', icon: 'siGithub' },
