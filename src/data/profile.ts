@@ -177,6 +177,8 @@ export const certifications: Certification[] = [
   { name: 'Databricks Accredited Platform Administrator', issuer: 'Databricks', date: 'Sep 2024', category: 'Data',
     url: 'https://credentials.databricks.com/42583bfb-e1f9-4d04-83c2-5da89deebd88' },
 
+  { name: 'Databricks Certified Generative AI Engineer Associate', issuer: 'Databricks', date: 'Nov 2026', category: 'AI',
+    url: 'https://credentials.databricks.com/c407ffc9-9017-4e4c-98ab-249aea11c071' },
   { name: 'AWS Certified AI Business Strategist', issuer: 'AWS', date: 'Nov 2026', category: 'AI',
     url: 'https://www.credly.com/badges/6a88e557-23b5-4382-92cf-f27f04986ee2' },
   { name: 'OpenAI Cyber Solutions Practitioner', issuer: 'OpenAI', date: 'Aug 2026', category: 'AI' },
